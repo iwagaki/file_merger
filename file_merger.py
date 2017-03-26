@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import shutil
 import filecmp
 import hashlib
@@ -37,14 +38,27 @@ def get_checksum_md5(file_path):
     return md5.hexdigest()
 
 
+def main():
+    argvs = sys.argv
+    argc = len(argvs)
 
-checksum_list = {}
+    if argc != 2:
+        print "Usage: %s <src_dir> <dst_dir>" % argvs[0]
 
-for root, f in find_all_files('PHOTOS/'):
-    path = os.path.join(root, f)
-    checksum = get_checksum_md5(path)
-    if checksum not in checksum_list:
-        copy_without_overwrite(root, f, 'MERGED')
-        checksum_list[checksum] = path
-    else:
-        print "Skipped: %s matched %s" % (path, checksum_list[checksum])
+    src_dir = argvs[1]
+    dest_dir = argvs[2]
+        
+    checksum_list = {}
+
+    for root, f in find_all_files(src_dir):
+        path = os.path.join(root, f)
+        checksum = get_checksum_md5(path)
+        if checksum not in checksum_list:
+            copy_without_overwrite(root, f, dest_dir)
+            checksum_list[checksum] = path
+        else:
+            print "Skipped: %s matched %s" % (path, checksum_list[checksum])
+
+
+if __name__ == '__main__':
+    main()
