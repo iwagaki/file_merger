@@ -38,16 +38,22 @@ def get_checksum_md5(file_path):
     return md5.hexdigest()
 
 
-def main():
+def get_options():
     argvs = sys.argv
     argc = len(argvs)
 
     if argc != 2:
         print "Usage: %s <src_dir> <dst_dir>" % argvs[0]
+        quit()
 
     src_dir = argvs[1]
     dest_dir = argvs[2]
-        
+    return src_dir, dest_dir
+
+
+def main():
+    src_dir, dest_dir = get_options()
+
     checksum_list = {}
 
     for root, f in find_all_files(src_dir):
